@@ -2,7 +2,7 @@
 #define _SIMPLE_DATA_RINGBUFFER_H_
 
 #include <stdint.h>
-#include "stddef.h"
+#include <stddef.h>
 /**
  * @brief   Define a Memory RINGBUF thread safe, and can full use pool.
  * @details API 1 and 2.
@@ -12,7 +12,7 @@
  *   Thread-B will update write_index, for put buffer to RINGBUF
  *               update unhandle_index, for use the buffer Thread-A had processed.
  */
-typedef struct
+typedef struct simple_data_ringbuffer
 {
     uint16_t total_size;  /* Number of buffers */
     uint16_t item_size;   /* Stride between elements */

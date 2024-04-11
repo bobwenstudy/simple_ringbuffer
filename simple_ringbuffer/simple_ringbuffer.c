@@ -1,6 +1,9 @@
+#include <string.h>
+#include <stdint.h>
+#include <stdlib.h>
+
 #include "simple_ringbuffer.h"
 
-#include <string.h>
 
 #ifndef MIN
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))

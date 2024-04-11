@@ -109,15 +109,17 @@ LIBDIRS		:= $(LIB)
 FIXPATH = $(subst /,\,$1)
 RM			:= del /q /s
 MD			:= mkdir
+MD_CHECK	:= $(Q)if not exist "$@"
 else
 MAIN	:= $(TARGET)
 ECHO=echo
-SOURCEDIRS	:= $(shell find $(SRC) -type d)
-INCLUDEDIRS	:= $(shell find $(INCLUDE) -type d)
-LIBDIRS		:= $(shell find $(LIB) -type d)
+SOURCEDIRS	:= $(SRC)
+INCLUDEDIRS	:= $(INCLUDE)
+LIBDIRS		:= $(LIB)
 FIXPATH = $1
 RM = rm -rf
 MD	:= mkdir -p
+MD_CHECK	:=
 endif
 
 # define any directories containing header files other than /usr/include
@@ -166,14 +168,14 @@ all: main
 
 # mk path for object.
 $(OBJ_MD):
-	$(Q)if not exist "$@" $(Q)$(MD) $(call FIXPATH, $@)
+	$(MD_CHECK) $(Q)$(MD) $(call FIXPATH, $@)
 
 # mk output path.
 $(OUTPUT_PATH):
-	$(Q)if not exist "$@" $(Q)$(MD) $(call FIXPATH, $@)
+	$(MD_CHECK) $(Q)$(MD) $(call FIXPATH, $@)
 
 $(OBJDIR):
-	$(Q)if not exist "$@" $(Q)$(MD) $(call FIXPATH, $@)
+	$(MD_CHECK) $(Q)$(MD) $(call FIXPATH, $@)
 
 $(OUTPUT_MAIN): $(OBJECTS)
 	@$(ECHO) Linking    : "$@"

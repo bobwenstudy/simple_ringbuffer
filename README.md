@@ -2,15 +2,15 @@
 
 在嵌入式开发中，经常有需要用到RingBuffer的概念，在RingBuffer中经常遇到一个Buffer满和Buffer空的判断的问题，一般的做法是留一个单位的buffer不用，这样做最省事，但是当RingBuffer单位是一个结构体时，这个浪费就不能接受了，市面上大多数解决办法是**镜像指示位**办法，但是具体实现上又有各种设计，但是并不是满足的开发需要，所以有本项目。
 
-本项目地址：[bobwenstudy/easy_timer (github.com)](https://github.com/bobwenstudy/easy_timer)，参考资料有：[环形缓冲器 - 维基百科，自由的百科全书 (wikipedia.org)](https://zh.wikipedia.org/wiki/環形緩衝區#镜像指示位)，[ring buffer，一篇文章讲透它？ - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/534098236)。
+本项目地址：[bobwenstudy/simple_ringbuffer: 一种基于镜像指示位办法的RingBuffer实现，解决Mirror和2的幂个数限制 (github.com)](https://github.com/bobwenstudy/simple_ringbuffer)，参考资料有：[环形缓冲器 - 维基百科，自由的百科全书 (wikipedia.org)](https://zh.wikipedia.org/wiki/環形緩衝區#镜像指示位)，[ring buffer，一篇文章讲透它？ - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/534098236)。
 
 对比现有的实现，本项目的特点是。
 
-| 类别                       | simple_ringbuffer | [kfifo(linux)](https://github.com/torvalds/linux/blob/master/lib/kfifo.c) | [ringbuffer (rt-thread)](https://www.rt-thread.org/document/site/#/rt-thread-version/rt-thread-standard/programming-manual/device-ipc/ringbuffer/ringbuffer?id=ringbuffer) |
-| -------------------------- | ----------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| 需要mirror位（多进程风险） | 否                | 否                                                           | 是                                                           |
-| 需要个数为2的幂            | 否                | 是                                                           | 否                                                           |
-| 支持结构体成员             | 是                | 是（linux5.7）                                               |                                                              |
+| 类别                       | [simple_ringbuffer](https://github.com/bobwenstudy/simple_ringbuffer) | [kfifo(linux)](https://github.com/torvalds/linux/blob/master/lib/kfifo.c) | [ringbuffer (rt-thread)](https://www.rt-thread.org/document/site/#/rt-thread-version/rt-thread-standard/programming-manual/device-ipc/ringbuffer/ringbuffer?id=ringbuffer) |
+| -------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 需要mirror位（多进程风险） | 否                                                           | 否                                                           | 是                                                           |
+| 需要个数为2的幂            | 否                                                           | 是                                                           | 否                                                           |
+| 支持结构体成员             | 是                                                           | 是（linux5.7）                                               |                                                              |
 
 
 
@@ -161,10 +161,18 @@ simple_data_ringbuffer_dequeue(&test_ringbuf); // real dequeue
 
 ## 环境搭建
 
-目前测试暂时只支持Windows编译，最终生成exe，可以直接在PC上跑。
+本项目支持Windows和Linux编译，同时支持Code Space在线编译，如果不想搭建环境可以直接CodeSpace编译。
+
+### Windows编译
 
 目前需要安装如下环境：
+
 - GCC环境，笔者用的msys64+mingw，用于编译生成exe，参考这个文章安装即可。[Win7下msys64安装mingw工具链 - Milton - 博客园 (cnblogs.com)](https://www.cnblogs.com/milton/p/11808091.html)。
+
+### GitHub-CodeSpace编译
+
+直接在线编译即可。
+
 
 
 ## 编译说明

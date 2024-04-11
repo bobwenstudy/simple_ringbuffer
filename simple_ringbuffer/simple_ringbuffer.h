@@ -2,9 +2,9 @@
 #define _SIMPLE_RINGBUFFER_H_
 
 #include <stdint.h>
-#include "stddef.h"
+#include <stddef.h>
 
-typedef struct
+typedef struct simple_ringbuffer
 {
     uint32_t total_size;  /* Number of buffers */
     uint32_t read_index;  /* Read. Read index */
