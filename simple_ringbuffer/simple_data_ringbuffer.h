@@ -67,6 +67,16 @@ static inline uint32_t simple_data_ringbuffer_total_size(simple_data_ringbuffer_
 }
 
 /**
+ * @brief  Returns the item size of the RINGBUF in bytes.
+ * @param  [in] ringbuf: The ringbuf to be used.
+ * @return The item size of the RINGBUF.
+ */
+static inline uint32_t simple_data_ringbuffer_item_size(simple_data_ringbuffer_t *ringbuf)
+{
+    return ringbuf->item_size;
+}
+
+/**
  * @brief  Reset the RINGBUF.
  * @param  [in] ringbuf: The ringbuf to be used.
  */

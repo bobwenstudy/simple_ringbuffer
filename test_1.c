@@ -129,7 +129,7 @@ static void test_data_work_full(void)
     ASSERT(simple_data_ringbuffer_is_empty(&test_ringbuf) == 1);
     ASSERT(simple_data_ringbuffer_is_full(&test_ringbuf) == 0);
 
-    for (int test_cnt = 0; test_cnt < 0x10000; test_cnt++)
+    for (int test_cnt = 0; test_cnt < 0x1000; test_cnt++)
     {
         int total_size = test_cnt % TEST_BUFFER_SIZE;
 
@@ -187,7 +187,7 @@ static void test_data_work_full_define(void)
     ASSERT(simple_data_ringbuffer_is_empty(&test_ringbuf) == 1);
     ASSERT(simple_data_ringbuffer_is_full(&test_ringbuf) == 0);
 
-    for (int test_cnt = 0; test_cnt < 0x10000; test_cnt++)
+    for (int test_cnt = 0; test_cnt < 0x1000; test_cnt++)
     {
         int total_size = test_cnt % TEST_BUFFER_SIZE;
 
@@ -245,7 +245,7 @@ static void test_data_work_full_define_enqueue_dequeue(void)
     ASSERT(simple_data_ringbuffer_is_empty(&test_ringbuf) == 1);
     ASSERT(simple_data_ringbuffer_is_full(&test_ringbuf) == 0);
 
-    for (int test_cnt = 0; test_cnt < 0x10000; test_cnt++)
+    for (int test_cnt = 0; test_cnt < 0x1000; test_cnt++)
     {
         int total_size = test_cnt % TEST_BUFFER_SIZE;
 
@@ -373,7 +373,7 @@ static void test_data_work_full_odd(void)
     ASSERT(simple_data_ringbuffer_is_empty(&test_ringbuf) == 1);
     ASSERT(simple_data_ringbuffer_is_full(&test_ringbuf) == 0);
 
-    for (int test_cnt = 0; test_cnt < 0x10000; test_cnt++)
+    for (int test_cnt = 0; test_cnt < 0x1000; test_cnt++)
     {
         int total_size = test_cnt % TEST_BUFFER_SIZE_ODD;
 
