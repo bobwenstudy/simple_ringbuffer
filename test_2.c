@@ -64,8 +64,8 @@ static void test_pool_work(void)
 
     SIMPLE_POOL_INIT(test_pool, TEST_BUFFER_SIZE, TEST_USER_DATA_SIZE);
 
-    struct test_user_data* ptr_save[TEST_BUFFER_SIZE];
-    
+    struct test_user_data *ptr_save[TEST_BUFFER_SIZE];
+
     int total_size = TEST_BUFFER_SIZE;
     ASSERT(SIMPLE_POOL_TOTAL_CNT(&test_pool) == TEST_BUFFER_SIZE);
     ASSERT(SIMPLE_POOL_ITEM_SIZE(&test_pool) == TEST_USER_DATA_SIZE);
@@ -73,11 +73,12 @@ static void test_pool_work(void)
     ASSERT(SIMPLE_POOL_RESERVE_SIZE(&test_pool) == TEST_BUFFER_SIZE - total_size);
     ASSERT(SIMPLE_POOL_IS_EMPTY(&test_pool) == (total_size == 0));
     ASSERT(SIMPLE_POOL_IS_FULL(&test_pool) == (total_size == TEST_BUFFER_SIZE));
- 
+
     for (int loop = 0; loop < TEST_BUFFER_SIZE; loop++)
     {
-        struct test_user_data* data;
+        struct test_user_data *data;
         SIMPLE_POOL_DEQUEUE(&test_pool, data);
+
         for (int i = 0; i < TEST_USER_DATA_SIZE; i++)
         {
             data->data[i] = i + loop;
@@ -95,7 +96,7 @@ static void test_pool_work(void)
 
     for (int loop = 0; loop < TEST_BUFFER_SIZE; loop++)
     {
-        struct test_user_data* data;
+        struct test_user_data *data;
         data = ptr_save[loop];
 
         // check read data
@@ -125,7 +126,7 @@ static void test_pool_work_full(void)
 
     SIMPLE_POOL_INIT(test_pool, TEST_BUFFER_SIZE, TEST_USER_DATA_SIZE);
 
-    struct test_user_data* ptr_save[TEST_BUFFER_SIZE];
+    struct test_user_data *ptr_save[TEST_BUFFER_SIZE];
 
     int total_size = TEST_BUFFER_SIZE;
     ASSERT(SIMPLE_POOL_TOTAL_CNT(&test_pool) == TEST_BUFFER_SIZE);
@@ -137,14 +138,42 @@ static void test_pool_work_full(void)
 
     for (int test_cnt = 0; test_cnt < 0x1000; test_cnt++)
     {
+        // clear data first.
+        for (int loop = 0; loop < TEST_BUFFER_SIZE; loop++)
+        {
+            struct test_user_data *data;
+            SIMPLE_POOL_DEQUEUE(&test_pool, data);
+            for (int i = 0; i < TEST_USER_DATA_SIZE; i++)
+            {
+                data->data[i] = 0;
+            }
+            ptr_save[loop] = data;
+
+            ASSERT(SIMPLE_POOL_TOTAL_CNT(&test_pool) == TEST_BUFFER_SIZE);
+            ASSERT(SIMPLE_POOL_ITEM_SIZE(&test_pool) == TEST_USER_DATA_SIZE);
+        }
+
+        for (int loop = 0; loop < TEST_BUFFER_SIZE; loop++)
+        {
+            struct test_user_data *data;
+            data = ptr_save[loop];
+
+            SIMPLE_POOL_ENQUEUE(&test_pool, data);
+            ASSERT(SIMPLE_POOL_TOTAL_CNT(&test_pool) == TEST_BUFFER_SIZE);
+            ASSERT(SIMPLE_POOL_ITEM_SIZE(&test_pool) == TEST_USER_DATA_SIZE);
+        }
+
+        // Test work
         int work_cnt = test_cnt % TEST_BUFFER_SIZE;
 
         for (int loop = 0; loop < work_cnt; loop++)
         {
-            struct test_user_data* data;
+            struct test_user_data *data;
             SIMPLE_POOL_DEQUEUE(&test_pool, data);
             for (int i = 0; i < TEST_USER_DATA_SIZE; i++)
             {
+                // Make sure origin data is zero, avoid data overflow
+                ASSERT(data->data[i] == 0);
                 data->data[i] = i + loop + test_cnt;
             }
             ptr_save[loop] = data;
@@ -160,7 +189,7 @@ static void test_pool_work_full(void)
 
         for (int loop = 0; loop < work_cnt; loop++)
         {
-            struct test_user_data* data;
+            struct test_user_data *data;
             data = ptr_save[loop];
 
             // check read data
@@ -173,7 +202,7 @@ static void test_pool_work_full(void)
             ASSERT(SIMPLE_POOL_TOTAL_CNT(&test_pool) == TEST_BUFFER_SIZE);
             ASSERT(SIMPLE_POOL_ITEM_SIZE(&test_pool) == TEST_USER_DATA_SIZE);
         }
-        
+
         work_cnt = 0;
         ASSERT(SIMPLE_POOL_SIZE(&test_pool) == TEST_BUFFER_SIZE - work_cnt);
         ASSERT(SIMPLE_POOL_RESERVE_SIZE(&test_pool) == work_cnt);
@@ -183,7 +212,6 @@ static void test_pool_work_full(void)
 
     SUITE_END();
 }
-
 
 #define TEST_USER_DATA_SIZE_ODD 0x203
 struct test_user_data_odd
@@ -201,8 +229,8 @@ static void test_pool_work_odd(void)
 
     SIMPLE_POOL_INIT(test_pool, TEST_BUFFER_SIZE_ODD, TEST_USER_DATA_SIZE_ODD);
 
-    struct test_user_data_odd* ptr_save[TEST_BUFFER_SIZE_ODD];
-    
+    struct test_user_data_odd *ptr_save[TEST_BUFFER_SIZE_ODD];
+
     int total_size = TEST_BUFFER_SIZE_ODD;
     ASSERT(SIMPLE_POOL_TOTAL_CNT(&test_pool) == TEST_BUFFER_SIZE_ODD);
     ASSERT(SIMPLE_POOL_ITEM_SIZE(&test_pool) == TEST_USER_DATA_SIZE_ODD);
@@ -210,10 +238,10 @@ static void test_pool_work_odd(void)
     ASSERT(SIMPLE_POOL_RESERVE_SIZE(&test_pool) == TEST_BUFFER_SIZE_ODD - total_size);
     ASSERT(SIMPLE_POOL_IS_EMPTY(&test_pool) == (total_size == 0));
     ASSERT(SIMPLE_POOL_IS_FULL(&test_pool) == (total_size == TEST_BUFFER_SIZE_ODD));
- 
+
     for (int loop = 0; loop < TEST_BUFFER_SIZE_ODD; loop++)
     {
-        struct test_user_data_odd* data;
+        struct test_user_data_odd *data;
         SIMPLE_POOL_DEQUEUE(&test_pool, data);
         for (int i = 0; i < TEST_USER_DATA_SIZE_ODD; i++)
         {
@@ -232,7 +260,7 @@ static void test_pool_work_odd(void)
 
     for (int loop = 0; loop < TEST_BUFFER_SIZE_ODD; loop++)
     {
-        struct test_user_data_odd* data;
+        struct test_user_data_odd *data;
         data = ptr_save[loop];
 
         // check read data
@@ -262,7 +290,7 @@ static void test_pool_work_full_odd(void)
 
     SIMPLE_POOL_INIT(test_pool, TEST_BUFFER_SIZE_ODD, TEST_USER_DATA_SIZE_ODD);
 
-    struct test_user_data_odd* ptr_save[TEST_BUFFER_SIZE_ODD];
+    struct test_user_data_odd *ptr_save[TEST_BUFFER_SIZE_ODD];
 
     int total_size = TEST_BUFFER_SIZE_ODD;
     ASSERT(SIMPLE_POOL_TOTAL_CNT(&test_pool) == TEST_BUFFER_SIZE_ODD);
@@ -274,14 +302,41 @@ static void test_pool_work_full_odd(void)
 
     for (int test_cnt = 0; test_cnt < 0x1000; test_cnt++)
     {
+        // clear data first.
+        for (int loop = 0; loop < TEST_BUFFER_SIZE_ODD; loop++)
+        {
+            struct test_user_data *data;
+            SIMPLE_POOL_DEQUEUE(&test_pool, data);
+            for (int i = 0; i < TEST_USER_DATA_SIZE_ODD; i++)
+            {
+                data->data[i] = 0;
+            }
+            ptr_save[loop] = data;
+
+            ASSERT(SIMPLE_POOL_TOTAL_CNT(&test_pool) == TEST_BUFFER_SIZE_ODD);
+            ASSERT(SIMPLE_POOL_ITEM_SIZE(&test_pool) == TEST_USER_DATA_SIZE_ODD);
+        }
+
+        for (int loop = 0; loop < TEST_BUFFER_SIZE_ODD; loop++)
+        {
+            struct test_user_data *data;
+            data = ptr_save[loop];
+
+            SIMPLE_POOL_ENQUEUE(&test_pool, data);
+            ASSERT(SIMPLE_POOL_TOTAL_CNT(&test_pool) == TEST_BUFFER_SIZE_ODD);
+            ASSERT(SIMPLE_POOL_ITEM_SIZE(&test_pool) == TEST_USER_DATA_SIZE_ODD);
+        }
+
         int work_cnt = test_cnt % TEST_BUFFER_SIZE_ODD;
 
         for (int loop = 0; loop < work_cnt; loop++)
         {
-            struct test_user_data_odd* data;
+            struct test_user_data_odd *data;
             SIMPLE_POOL_DEQUEUE(&test_pool, data);
             for (int i = 0; i < TEST_USER_DATA_SIZE_ODD; i++)
             {
+                // Make sure origin data is zero, avoid data overflow
+                ASSERT(data->data[i] == 0);
                 data->data[i] = i + loop + test_cnt;
             }
             ptr_save[loop] = data;
@@ -297,7 +352,7 @@ static void test_pool_work_full_odd(void)
 
         for (int loop = 0; loop < work_cnt; loop++)
         {
-            struct test_user_data_odd* data;
+            struct test_user_data_odd *data;
             data = ptr_save[loop];
 
             // check read data
@@ -310,7 +365,7 @@ static void test_pool_work_full_odd(void)
             ASSERT(SIMPLE_POOL_TOTAL_CNT(&test_pool) == TEST_BUFFER_SIZE_ODD);
             ASSERT(SIMPLE_POOL_ITEM_SIZE(&test_pool) == TEST_USER_DATA_SIZE_ODD);
         }
-        
+
         work_cnt = 0;
         ASSERT(SIMPLE_POOL_SIZE(&test_pool) == TEST_BUFFER_SIZE_ODD - work_cnt);
         ASSERT(SIMPLE_POOL_RESERVE_SIZE(&test_pool) == work_cnt);
@@ -325,7 +380,7 @@ void test_pool_ringbuffer(void)
 {
     test_pool_work();
     test_pool_work_full();
-    
+
     test_pool_work_odd();
     test_pool_work_full_odd();
 }

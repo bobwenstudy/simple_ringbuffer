@@ -9,9 +9,11 @@ typedef struct
     uint16_t item_size;
 } simple_pool_t;
 
-#define SIMPLE_POOL_ENQUEUE(_spool, _val) simple_data_ringbuffer_put(&(_spool)->ringbuf, (void *)&(_val))
+#define SIMPLE_POOL_ENQUEUE(_spool, _val)                                                          \
+    simple_data_ringbuffer_put(&(_spool)->ringbuf, (void *)&(_val))
 
-#define SIMPLE_POOL_DEQUEUE(_spool, _val) simple_data_ringbuffer_get(&(_spool)->ringbuf, (void *)&(_val))
+#define SIMPLE_POOL_DEQUEUE(_spool, _val)                                                          \
+    simple_data_ringbuffer_get(&(_spool)->ringbuf, (void *)&(_val))
 
 #define SIMPLE_POOL_IS_EMPTY(_spool) simple_data_ringbuffer_is_empty(&(_spool)->ringbuf)
 
@@ -25,17 +27,17 @@ typedef struct
 
 #define SIMPLE_POOL_ITEM_SIZE(_spool) (_spool)->item_size
 
-#define SIMPLE_POOL_DEFINE(_name, _num, _data_size)                                                                         \
-    static simple_pool_t _name;                                                                                             \
-    static void * _name##_fifo_storage[_num];                                                                         \
+#define SIMPLE_POOL_DEFINE(_name, _num, _data_size)                                                \
+    static simple_pool_t _name;                                                                    \
+    static void *_name##_fifo_storage[_num];                                                       \
     static uint8_t _name##_data_storage[_num][MROUND(_data_size)];
 
-#define SIMPLE_POOL_INIT(_name, _num, _data_size)                                                                           \
-    simple_pool_init(&_name, _name##_fifo_storage, (uint8_t *)_name##_data_storage, _num, _data_size)
+#define SIMPLE_POOL_INIT(_name, _num, _data_size)                                                  \
+    simple_pool_init(&_name, _name##_fifo_storage, (uint8_t *)_name##_data_storage, _num,          \
+                     _data_size)
 
-
-static inline void simple_pool_init(simple_pool_t *spool, void **fifo_storage, uint8_t *data_storage, uint16_t n,
-                                    uint16_t data_item_size)
+static inline void simple_pool_init(simple_pool_t *spool, void **fifo_storage,
+                                    uint8_t *data_storage, uint16_t n, uint16_t data_item_size)
 {
     spool->item_size = data_item_size;
 
@@ -43,7 +45,7 @@ static inline void simple_pool_init(simple_pool_t *spool, void **fifo_storage, u
     simple_data_ringbuffer_init(&spool->ringbuf, n, sizeof(void *), fifo_storage);
     for (int i = 0; i < n; i++)
     {
-        void* data_item = (void*)(data_storage + MROUND(data_item_size) * i);
+        void *data_item = (void *)(data_storage + MROUND(data_item_size) * i);
         SIMPLE_POOL_ENQUEUE(spool, data_item);
     }
 }

@@ -4,7 +4,6 @@
 
 #include "simple_ringbuffer.h"
 
-
 #ifndef MIN
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #endif
