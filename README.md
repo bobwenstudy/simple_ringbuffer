@@ -10,7 +10,7 @@
 | -------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | 需要mirror位（多进程风险） | 否                                                           | 否                                                           | 是                                                           |
 | 需要个数为2的幂            | 否                                                           | 是                                                           | 否                                                           |
-| 支持结构体成员             | 是                                                           | 是（linux5.7）                                               |                                                              |
+| 支持结构体成员             | 是                                                           | 是（linux5.7）                                               | 否                                                           |
 
 
 
@@ -66,8 +66,8 @@ uint32_t wptr = RINGBUFFER_INDEX_TO_PTR(ringbuf->write_index, ringbuf->total_siz
 
 代码结构如下所示：
 
-- **simple_ringbuffer**：Ringbuffer实现，包含结构体操作实现`simple_data_ringbuffer`。
-- **test_0.c**和**test_1.c**：测试例程。
+- **simple_ringbuffer**：Ringbuffer实现，包含结构体操作实现`simple_data_ringbuffer`和缓冲池操作实现`simple_data_ringbuffer`。
+- **test_0.c**和**test_1.c**和**test_2.c**：测试例程。
 - **main.c**：测试例程。
 - **build.mk**和**Makefile**：Makefile编译环境。
 - **README.md**：说明文档
@@ -151,6 +151,51 @@ struct test_user_data *data;
 data = simple_data_ringbuffer_dequeue_peek(&test_ringbuf); // dequeue peek
 
 simple_data_ringbuffer_dequeue(&test_ringbuf); // real dequeue
+```
+
+
+
+
+
+## 缓存池操作
+
+ringbuffer必须先入先出，在部分**不是先入先出**场景下，又想用RingBuffer读写线程独立的特性，本项目提供了一个简易数据缓存池实现方案，通过只保存数据指针的方式，来实现非先入先出的数据缓冲池。
+
+其结构体如下。`simple_pool_t`用于缓冲池管理，由于RingBuffer存储的是指针，所以需要通过`item_size`记录每个成员的实际大小。定义一个Pool时，需要指针数组`_name##_fifo_storage[_num]`，其用于存储实际存放数据的指针，用RingBuffer管理。真实存数据的区域为`_name##_data_storage[_num][MROUND(_data_size)]`。
+
+```c
+typedef struct simple_pool
+{
+    simple_data_ringbuffer_t ringbuf;
+    uint16_t item_size;
+} simple_pool_t;
+
+#define SIMPLE_POOL_DEFINE(_name, _num, _data_size)                                                \
+    static simple_pool_t _name;                                                                    \
+    static void *_name##_fifo_storage[_num];                                                       \
+    static uint8_t _name##_data_storage[_num][MROUND(_data_size)];
+```
+
+使用操作如下：
+
+```c
+struct test_user_data
+{
+    uint8_t data[0x100];
+};
+
+// Define pool.
+SIMPLE_POOL_DEFINE(test_pool, 0x10, sizeof(struct test_user_data));
+
+// Init pool.
+SIMPLE_POOL_INIT(test_pool, 0x10, sizeof(struct test_user_data));
+
+// Get data from pool.
+struct test_user_data *data;
+SIMPLE_POOL_DEQUEUE(&test_pool, data);
+
+// Put data to pool.
+SIMPLE_POOL_ENQUEUE(&test_pool, data);
 ```
 
 

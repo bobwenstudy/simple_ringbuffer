@@ -3,7 +3,7 @@
 
 #include "simple_data_ringbuffer.h"
 
-typedef struct
+typedef struct simple_pool
 {
     simple_data_ringbuffer_t ringbuf;
     uint16_t item_size;

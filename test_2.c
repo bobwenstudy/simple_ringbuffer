@@ -156,7 +156,7 @@ static void test_pool_work_full(void)
         for (int loop = 0; loop < TEST_BUFFER_SIZE; loop++)
         {
             struct test_user_data *data;
-            data = ptr_save[loop];
+            data = ptr_save[TEST_BUFFER_SIZE - loop - 1]; // change ptr order
 
             SIMPLE_POOL_ENQUEUE(&test_pool, data);
             ASSERT(SIMPLE_POOL_TOTAL_CNT(&test_pool) == TEST_BUFFER_SIZE);
@@ -190,12 +190,12 @@ static void test_pool_work_full(void)
         for (int loop = 0; loop < work_cnt; loop++)
         {
             struct test_user_data *data;
-            data = ptr_save[loop];
+            data = ptr_save[work_cnt - loop - 1]; // change ptr order
 
             // check read data
             for (int i = 0; i < TEST_USER_DATA_SIZE; i++)
             {
-                ASSERT(data->data[i] == (uint8_t)(i + loop + test_cnt));
+                ASSERT(data->data[i] == (uint8_t)(i + (test_cnt - loop - 1) + test_cnt));
             }
 
             SIMPLE_POOL_ENQUEUE(&test_pool, data);
@@ -305,7 +305,7 @@ static void test_pool_work_full_odd(void)
         // clear data first.
         for (int loop = 0; loop < TEST_BUFFER_SIZE_ODD; loop++)
         {
-            struct test_user_data *data;
+            struct test_user_data_odd *data;
             SIMPLE_POOL_DEQUEUE(&test_pool, data);
             for (int i = 0; i < TEST_USER_DATA_SIZE_ODD; i++)
             {
@@ -319,8 +319,8 @@ static void test_pool_work_full_odd(void)
 
         for (int loop = 0; loop < TEST_BUFFER_SIZE_ODD; loop++)
         {
-            struct test_user_data *data;
-            data = ptr_save[loop];
+            struct test_user_data_odd *data;
+            data = ptr_save[TEST_BUFFER_SIZE_ODD - loop - 1]; // change ptr order
 
             SIMPLE_POOL_ENQUEUE(&test_pool, data);
             ASSERT(SIMPLE_POOL_TOTAL_CNT(&test_pool) == TEST_BUFFER_SIZE_ODD);
