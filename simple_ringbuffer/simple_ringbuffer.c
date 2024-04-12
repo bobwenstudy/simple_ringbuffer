@@ -26,14 +26,12 @@ uint32_t simple_ringbuffer_put(simple_ringbuffer_t *ringbuf, uint8_t *buffer, ui
     /* then put the rest (if any) at the beginning of the buffer */
     memcpy(ringbuf->buffer, buffer + l, len - l);
 
-    // printf("write_index0: %d\n", ringbuf->write_index);
     write_index = ringbuf->write_index + len;
     if (write_index >= (ringbuf->total_size << 1))
     {
         write_index -= (ringbuf->total_size << 1);
     }
     ringbuf->write_index = write_index;
-    // printf("write_index1: %d\n", ringbuf->write_index);
 
     return len;
 }
@@ -44,9 +42,7 @@ uint32_t simple_ringbuffer_get(simple_ringbuffer_t *ringbuf, uint8_t *buffer, ui
     uint32_t read_index;
     uint32_t rptr = RINGBUFFER_INDEX_TO_PTR(ringbuf->read_index, ringbuf->total_size);
 
-    // printf("len0: %d\n", len);
     len = MIN(len, simple_ringbuffer_size(ringbuf));
-    // printf("len1: %d\n", len);
 
     /* first get the data from ringbuf->read_index until the end of the buffer */
     l = MIN(len, ringbuf->total_size - rptr);
@@ -55,14 +51,12 @@ uint32_t simple_ringbuffer_get(simple_ringbuffer_t *ringbuf, uint8_t *buffer, ui
     /* then get the rest (if any) from the beginning of the buffer */
     memcpy(buffer + l, ringbuf->buffer, len - l);
 
-    // printf("read_index0: %d\n", ringbuf->read_index);
     read_index = ringbuf->read_index + len;
     if (read_index >= (ringbuf->total_size << 1))
     {
         read_index -= (ringbuf->total_size << 1);
     }
     ringbuf->read_index = read_index;
-    // printf("read_index1: %d\n", ringbuf->read_index);
 
     return len;
 }

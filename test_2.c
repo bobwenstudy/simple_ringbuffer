@@ -195,7 +195,7 @@ static void test_pool_work_full(void)
             // check read data
             for (int i = 0; i < TEST_USER_DATA_SIZE; i++)
             {
-                ASSERT(data->data[i] == (uint8_t)(i + (test_cnt - loop - 1) + test_cnt));
+                ASSERT(data->data[i] == (uint8_t)(i + (work_cnt - loop - 1) + test_cnt));
             }
 
             SIMPLE_POOL_ENQUEUE(&test_pool, data);
@@ -353,12 +353,12 @@ static void test_pool_work_full_odd(void)
         for (int loop = 0; loop < work_cnt; loop++)
         {
             struct test_user_data_odd *data;
-            data = ptr_save[loop];
+            data = ptr_save[work_cnt - loop - 1]; // change ptr order
 
             // check read data
             for (int i = 0; i < TEST_USER_DATA_SIZE_ODD; i++)
             {
-                ASSERT(data->data[i] == (uint8_t)(i + loop + test_cnt));
+                ASSERT(data->data[i] == (uint8_t)(i + (work_cnt - loop - 1) + test_cnt));
             }
 
             SIMPLE_POOL_ENQUEUE(&test_pool, data);
