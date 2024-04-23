@@ -47,7 +47,7 @@ static void SUITE_END(void)
         suites_empty++;
 }
 
-#define TEST_BUFFER_SIZE 256
+#define TEST_BUFFER_SIZE 500
 
 static void test_work(void)
 {
@@ -213,7 +213,7 @@ static void test_work_invalid(void)
     for (int i = 0; i < sizeof(rdata); i++)
     {
         // printf("i: %d, rdata: %d\n", i, rdata[i]);
-        ASSERT(rdata[i] == i + (TEST_BUFFER_SIZE / 2));
+        ASSERT(rdata[i] == (uint8_t)(i + (TEST_BUFFER_SIZE / 2)));
     }
 
     total_size -= sizeof(rdata);
@@ -412,7 +412,7 @@ static void test_work_read_index_big_to_write_index(void)
     for (int i = 0; i < sizeof(rdata); i++)
     {
         // printf("i: %d, rdata: %d\n", i, rdata[i]);
-        ASSERT(rdata[i] == i + TEST_BUFFER_SIZE / 2);
+        ASSERT(rdata[i] == (uint8_t)(i + TEST_BUFFER_SIZE / 2));
     }
 
     ASSERT(len > 0);
@@ -528,7 +528,7 @@ static void test_work_read_index_big_to_write_index_middle(void)
     for (int i = 0; i < sizeof(rdata); i++)
     {
         // printf("i: %d, rdata: %d\n", i, rdata[i]);
-        ASSERT(rdata[i] == i + TEST_BUFFER_SIZE / 2);
+        ASSERT(rdata[i] == (uint8_t)(i + TEST_BUFFER_SIZE / 2));
     }
 
     ASSERT(len > 0);
@@ -545,7 +545,7 @@ static void test_work_read_index_big_to_write_index_middle(void)
     for (int i = 0; i < sizeof(rdata); i++)
     {
         // printf("i: %d, rdata: %d\n", i, rdata[i]);
-        ASSERT(rdata[i] == i + TEST_BUFFER_SIZE * 3 / 4);
+        ASSERT(rdata[i] == (uint8_t)(i + TEST_BUFFER_SIZE * 3 / 4));
     }
 
     ASSERT(len > 0);

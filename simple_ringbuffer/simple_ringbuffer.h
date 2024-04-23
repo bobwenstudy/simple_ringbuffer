@@ -20,7 +20,7 @@ typedef struct simple_ringbuffer
                                         .buffer = (void *)_name##_data_storage}
 
 #define SIMPLE_RINGBUFFER_INIT(_name, _num)                                                        \
-    simple_data_ringbuffer_init(&_name, _num, (void *)_name##_data_storage)
+    simple_ringbuffer_init(&_name, _num, (void *)_name##_data_storage)
 
 /**
  * @brief  Returns the size of the RINGBUF in bytes.
